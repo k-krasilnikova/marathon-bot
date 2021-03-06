@@ -10,7 +10,7 @@ import {
 import { clearReports } from "../middlewares/reports.js";
 import { getCommonMessageByType } from "../middlewares/commonMessages.js";
 import { createMarathon, updateMarathon } from "../middlewares/marathons.js";
-import { scheduleDailyReport } from "../scheduler.js";
+import { scheduleDailyReport, scheduleInterastingInfoSend } from "../scheduler.js";
 
 const trainerHandler = async (bot, stage) => {
   bot.command("/start_marathon", async (ctx) => {
@@ -32,6 +32,7 @@ const trainerHandler = async (bot, stage) => {
           ctx.telegram.sendMessage(client.chatId - 1, startMessage.text); //TODO: REMOVE -1
           scheduleDailyReport(bot, client.chatId - 1); //TODO: REMOVE -1
         });
+        scheduleInterastingInfoSend()
       }
 
       let message = alreadyExist

@@ -9,7 +9,7 @@ import {
 } from "./middlewares/users.js";
 import { getRandomMessage } from "./middlewares/angryMessages.js";
 import { getMarathon } from "./middlewares/marathons.js";
-import { scheduleDailyReport } from "./scheduler.js";
+import { scheduleDailyReport, scheduleInterastingInfoSend } from "./scheduler.js";
 
 export const sendNotificationForReviewer = async ({
   message,
@@ -30,6 +30,7 @@ export const restartApplication = async (bot) => {
     for (const user of usersWithoutTrainer) {
       scheduleDailyReport(bot, user.chatId - 1); //TODO: REMOVE PLUS ONE
     }
+    scheduleInterastingInfoSend()
   }
 };
 

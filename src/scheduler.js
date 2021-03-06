@@ -35,6 +35,41 @@ export const scheduleDailyReport = (bot, chatId) => {
   });
 };
 
+export const scheduleInterastingInfoSend = (bot) => {
+  const task = cron.schedule(CONFIG.SCHEDULE_TIME_INFO, async () => {
+    const marathon = await getMarathon({
+      isActive: true,
+    });
+    if (marathon) {
+      const allUsers = await getAllUsersId({ createdAt: { $lt: new Date() }});
+
+      for (const user of allUsers) {
+        const dateBefore = new Date().setDate(new Date().getDate() - 4);
+        const reports = await getReports({
+          chatId: user,
+          createdAt: {
+            $gte: new Date(dateBefore),
+            $lt: new Date(),
+          },
+        });
+        if (reports.length >= 3) {
+          // const removeMessage = await getCommonMessageByType(
+          //   COMMON_MESSAGE_TYPES.RM
+          // );
+          bot.telegram.sendMessage(user - 1, "lol");//removeMessage.text); //TODO REMOVE -1
+        }
+      }
+
+      sendNotificationForReviewer({
+        message: "Пользователям был отправлен совет с полезной информацией.",
+        ctx: bot,
+      });
+    } else {
+      task.destroy();
+    }
+  });
+};
+
 export const scheduleCheckingReports = (bot) => {
   const task = cron.schedule(CONFIG.SCHEDULE_TIME_ANGRY, async () => {
     const marathon = await getMarathon({
