@@ -48,6 +48,6 @@ module.exports = {
   },
 
   async down(db, client) {
-    db.dropCollection("commonMessages");
+    db.dropCollection("common_messages");
   },
 };
