@@ -85,11 +85,11 @@ const dailyReportHandler = async (bot, stage) => {
       ? ""
       : ctx.message.text;
     ctx.reply(REPLIES.DailyReport.end);
-    const user = await getUserByChatId(ctx.chat.id + 1); //TODO: REMOVE PLUS ONE
+    const user = await getUserByChatId(ctx.chat.id);
     const today = getDateInString().format(DATE_FORMAT);
 
     const props = {
-      chatId: ctx.chat.id + 1, //TODO: REMOVE PLUS ONE
+      chatId: ctx.chat.id,
       breakfest: ctx.session.breakfest,
       lunch: ctx.session.lunch,
       dinner: ctx.session.dinner,
@@ -134,14 +134,14 @@ const dailyReportHandler = async (bot, stage) => {
   bot.action(DAILY_MARKUP.ND.value, async (ctx) => {
     ctx.deleteMessage();
     ctx.reply(DAILY_MARKUP.ND.reply);
-    const user = await getUserByChatId(ctx.chat.id + 1); //TODO: REMOVE PLUS ONE
+    const user = await getUserByChatId(ctx.chat.id);
     const message = `🚫 Пользователь ${user.fullName} отказался заполнять отчёт.`;
     sendNotificationForReviewer({ message, ctx });
   });
 
   const processReaction = (ctx, reaction) => {
     const previousMessage = ctx.update.callback_query.message.text;
-    const user = Number(previousMessage.match(/([0-9]{9})/g)[0]) - 1; //TODO REMOVE - 1
+    const user = Number(previousMessage.match(/([0-9]{9})/g)[0]); 
     const date = previousMessage.match(/[0-9]*\/[0-9]*\/[0-9]*/g)[0];
     const message =
       "🥑 Тренер отреагировал на твоё питание за " + date + "\n" + reaction;

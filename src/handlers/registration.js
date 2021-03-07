@@ -45,7 +45,7 @@ const registrationHandler = async (bot, stage) => {
     ctx.reply(REPLIES.Registration.end);
 
     const props = {
-      chatId: ctx.chat.id + 1 || 0, //TODO: REMOVE PLUS ONE
+      chatId: ctx.chat.id || 0,
       fullName: ctx.session.fullName,
       weight: ctx.session.weight,
       height: ctx.session.height,

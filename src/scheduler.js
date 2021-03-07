@@ -8,6 +8,7 @@ import { getUsersWithReport, getReports } from "./middlewares/reports.js";
 import { getAllUsersId, updateUserByChatId } from "./middlewares/users.js";
 import { getCommonMessageByType } from "./middlewares/commonMessages.js";
 import { getMarathon } from "./middlewares/marathons.js";
+import { getUsefullMessage, setUsedUsefullMessage } from "./middlewares/usefullMessages.js";
 import { sendNotificationForReviewer } from "./utils.js";
 
 export const scheduleDailyReport = (bot, chatId) => {
@@ -26,7 +27,7 @@ export const scheduleDailyReport = (bot, chatId) => {
         .catch(async (error) => {
           console.log("403 Error", chatId);
           if (error.code === 403) {
-            await updateUserByChatId(chatId + 1, { isActive: false }); //TODO: REMOVE +1
+            await updateUserByChatId(chatId, { isActive: false });
           }
         });
     } else {
@@ -40,8 +41,11 @@ export const scheduleInterastingInfoSend = (bot) => {
     const marathon = await getMarathon({
       isActive: true,
     });
-    if (marathon) {
+    const usefullMessage = await getUsefullMessage();
+
+    if (marathon && usefullMessage) {
       const allUsers = await getAllUsersId({ createdAt: { $lt: new Date() }});
+      await setUsedUsefullMessage(usefullMessage.id);
 
       for (const user of allUsers) {
         const dateBefore = new Date().setDate(new Date().getDate() - 4);
@@ -53,10 +57,7 @@ export const scheduleInterastingInfoSend = (bot) => {
           },
         });
         if (reports.length >= 3) {
-          // const removeMessage = await getCommonMessageByType(
-          //   COMMON_MESSAGE_TYPES.RM
-          // );
-          bot.telegram.sendMessage(user - 1, "lol");//removeMessage.text); //TODO REMOVE -1
+          bot.telegram.sendMessage(user, usefullMessage.text);
         }
       }
 
@@ -100,7 +101,7 @@ export const scheduleCheckingReports = (bot) => {
           await updateUserByChatId(user, {
             isActive: false,
           });
-          bot.telegram.sendMessage(user - 1, removeMessage.text); //TODO REMOVE -1
+          bot.telegram.sendMessage(user, removeMessage.text);
           sendNotificationForReviewer({
             message: `Пользователь с чат-айди ${user} был удалён из системы из-за отссутствия отчётов.`,
             ctx: bot,

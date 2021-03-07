@@ -28,9 +28,9 @@ export const restartApplication = async (bot) => {
     const users = await getAllUsers();
     const usersWithoutTrainer = users.filter((user) => !user.isTrainer);
     for (const user of usersWithoutTrainer) {
-      scheduleDailyReport(bot, user.chatId - 1); //TODO: REMOVE PLUS ONE
+      scheduleDailyReport(bot, user.chatId);
     }
-    scheduleInterastingInfoSend()
+    scheduleInterastingInfoSend(bot)
   }
 };
 
@@ -38,10 +38,9 @@ export const sendAngryMessage = async (bot, user) => {
   console.log("Send angry message to:", user);
   const angryMessage = await getRandomMessage();
   bot.telegram.sendMessage(
-    user - 1,
+    user,
     angryMessage ? angryMessage.text : REPLIES.AngryMessage,
     {
-      //TODO: REMOVE MINUS ONE
       parse_mode: "MarkdownV2",
       disable_notification: true,
     }

@@ -10,6 +10,7 @@ import {
 import { clearReports } from "../middlewares/reports.js";
 import { getCommonMessageByType } from "../middlewares/commonMessages.js";
 import { createMarathon, updateMarathon } from "../middlewares/marathons.js";
+import { clearMessageStatuses } from "../middlewares/usefullMessages.js";
 import { scheduleDailyReport, scheduleInterastingInfoSend } from "../scheduler.js";
 
 const trainerHandler = async (bot, stage) => {
@@ -29,10 +30,10 @@ const trainerHandler = async (bot, stage) => {
 
       if (!alreadyExist) {
         clients.map((client) => {
-          ctx.telegram.sendMessage(client.chatId - 1, startMessage.text); //TODO: REMOVE -1
-          scheduleDailyReport(bot, client.chatId - 1); //TODO: REMOVE -1
+          ctx.telegram.sendMessage(client.chatId, startMessage.text);
+          scheduleDailyReport(bot, client.chatId);
         });
-        scheduleInterastingInfoSend()
+        scheduleInterastingInfoSend(ctx)
       }
 
       let message = alreadyExist
@@ -60,10 +61,11 @@ const trainerHandler = async (bot, stage) => {
       if (exist) {
         const clients = await getAllUsers();
         clients.map((client) => {
-          ctx.telegram.sendMessage(client.chatId - 1, startMessage.text); //TODO: REMOVE -1
+          ctx.telegram.sendMessage(client.chatId, startMessage.text);
         });
         await clearReports();
         await clearUsers();
+        await clearMessageStatuses()
       }
 
       let message = exist
@@ -102,6 +104,7 @@ const trainerHandler = async (bot, stage) => {
   const getChatIdToRemove = new Scene("getChatIdToRemove");
   stage.register(getChatIdToRemove);
   getChatIdToRemove.on("text", async (ctx) => {
+    if (Number(ctx.message.text)) {
     ctx.session.chatId = Number(ctx.message.text);
     const updatedUser = await updateUserByChatId(ctx.session.chatId, {
       isActive: false,
@@ -116,7 +119,7 @@ const trainerHandler = async (bot, stage) => {
       );
     } else {
       ctx.reply("Такого пользователя в системе нет.");
-    }
+    }}
     await ctx.scene.leave("getChatIdToRemove");
   });
 };
