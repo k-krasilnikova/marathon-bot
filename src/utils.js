@@ -30,7 +30,8 @@ export const restartApplication = async (bot) => {
     for (const user of usersWithoutTrainer) {
       scheduleDailyReport(bot, user.chatId);
     }
-    scheduleInterastingInfoSend(bot)
+    scheduleInterastingInfoSend(bot);
+    console.log(bot.telegram.messages);
   }
 };
 

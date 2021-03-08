@@ -77,7 +77,8 @@ export const scheduleCheckingReports = (bot) => {
       isActive: true,
     });
     if (marathon) {
-      const allUsers = await getAllUsersId({ createdAt: { $lt: new Date() } });
+      const dateBefore = new Date().setDate(new Date().getDate() - 1);
+      const allUsers = await getAllUsersId({ createdAt: { $lte: new Date(dateBefore) } });
       const usersWithReport = await getUsersWithReport();
       const usersWithoutReport = difference(allUsers, usersWithReport);
 
@@ -86,7 +87,6 @@ export const scheduleCheckingReports = (bot) => {
       }
 
       for (const user of allUsers) {
-        const dateBefore = new Date().setDate(new Date().getDate() - 6);
         const reports = await getReports({
           chatId: user,
           createdAt: {
