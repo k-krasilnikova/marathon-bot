@@ -94,19 +94,20 @@ export const scheduleCheckingReports = (bot) => {
             $lt: new Date(),
           },
         });
-        if (reports.length < 1) {
-          const removeMessage = await getCommonMessageByType(
-            COMMON_MESSAGE_TYPES.RM
-          );
-          await updateUserByChatId(user, {
-            isActive: false,
-          });
-          bot.telegram.sendMessage(user, removeMessage.text);
-          sendNotificationForReviewer({
-            message: `Пользователь с чат-айди ${user} был удалён из системы из-за отссутствия отчётов.`,
-            ctx: bot,
-          });
-        }
+        console.log(user, "REPORTS LENGTH", reports.length)
+        // if (reports.length < 1) {
+        //   const removeMessage = await getCommonMessageByType(
+        //     COMMON_MESSAGE_TYPES.RM
+        //   );
+        //   await updateUserByChatId(user, {
+        //     isActive: false,
+        //   });
+        //   bot.telegram.sendMessage(user, removeMessage.text);
+        //   sendNotificationForReviewer({
+        //     message: `Пользователь с чат-айди ${user} был удалён из системы из-за отссутствия отчётов.`,
+        //     ctx: bot,
+        //   });
+        // }
       }
     } else {
       task.destroy();
