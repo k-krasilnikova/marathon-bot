@@ -31,8 +31,6 @@ export const restartApplication = async (bot) => {
       scheduleDailyReport(bot, user.chatId);
     }
     scheduleInterastingInfoSend(bot);
-    console.log(bot);
-    bot.telegram.deleteMessage(users[0].chatId)
   }
 };
 
