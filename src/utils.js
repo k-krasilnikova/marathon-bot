@@ -31,7 +31,7 @@ export const restartApplication = async (bot) => {
       scheduleDailyReport(bot, user.chatId);
     }
     scheduleInterastingInfoSend(bot);
-    console.log(bot.telegram.messages);
+    console.log(bot.telegram);
   }
 };
 
