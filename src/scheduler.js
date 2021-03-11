@@ -56,15 +56,16 @@ export const scheduleInterastingInfoSend = (bot) => {
             $lt: new Date(),
           },
         });
+        console.log('Usefull message reports length', user, reports.length)
         if (reports.length >= 3) {
           bot.telegram.sendMessage(user, usefullMessage.text);
         }
-      }
 
-      sendNotificationForReviewer({
-        message: "Пользователям был отправлен совет с полезной информацией.",
-        ctx: bot,
-      });
+        sendNotificationForReviewer({
+          message: "Пользователям был отправлен совет с полезной информацией.",
+          ctx: bot,
+        });
+      }
     } else {
       task.destroy();
     }
@@ -77,7 +78,7 @@ export const scheduleCheckingReports = (bot) => {
       isActive: true,
     });
     if (marathon) {
-      const dateBefore = new Date().setDate(new Date().getDate() - 1);
+      let dateBefore = new Date().setDate(new Date().getDate() - 1);
       const allUsers = await getAllUsersId({ createdAt: { $lte: new Date(dateBefore) } });
       const usersWithReport = await getUsersWithReport();
       const usersWithoutReport = difference(allUsers, usersWithReport);
@@ -87,6 +88,7 @@ export const scheduleCheckingReports = (bot) => {
       }
 
       for (const user of allUsers) {
+        dateBefore = new Date().setDate(new Date().getDate() - 6);
         const reports = await getReports({
           chatId: user,
           createdAt: {
