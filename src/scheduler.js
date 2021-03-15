@@ -60,12 +60,11 @@ export const scheduleInterastingInfoSend = (bot) => {
         if (reports.length >= 3) {
           bot.telegram.sendMessage(user, usefullMessage.text);
         }
-
-        sendNotificationForReviewer({
-          message: "Пользователям был отправлен совет с полезной информацией.",
-          ctx: bot,
-        });
-      }
+      }        
+      sendNotificationForReviewer({
+        message: "Пользователям был отправлен совет с полезной информацией.",
+        ctx: bot,
+      });
     } else {
       task.destroy();
     }
@@ -96,20 +95,20 @@ export const scheduleCheckingReports = (bot) => {
             $lt: new Date(),
           },
         });
-        console.log(user, "REPORTS LENGTH", reports.length)
-        // if (reports.length < 1) {
-        //   const removeMessage = await getCommonMessageByType(
-        //     COMMON_MESSAGE_TYPES.RM
-        //   );
-        //   await updateUserByChatId(user, {
-        //     isActive: false,
-        //   });
-        //   bot.telegram.sendMessage(user, removeMessage.text);
-        //   sendNotificationForReviewer({
-        //     message: `Пользователь с чат-айди ${user} был удалён из системы из-за отссутствия отчётов.`,
-        //     ctx: bot,
-        //   });
-        // }
+        console.log(user, "REPORTS LENGTH", reports.length); //TODO: ADD HANDLER FOR FIRST 6 DAYS
+        if (reports.length < 1) {
+          const removeMessage = await getCommonMessageByType(
+            COMMON_MESSAGE_TYPES.RM
+          );
+          await updateUserByChatId(user, {
+            isActive: false,
+          });
+          bot.telegram.sendMessage(user, removeMessage.text);
+          sendNotificationForReviewer({
+            message: `Пользователь с чат-айди ${user} был удалён из системы из-за отссутствия отчётов.`,
+            ctx: bot,
+          });
+        }
       }
     } else {
       task.destroy();
