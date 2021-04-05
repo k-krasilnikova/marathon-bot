@@ -76,6 +76,9 @@ export const scheduleCheckingReports = (bot) => {
     const marathon = await getMarathon({
       isActive: true,
     });
+    let sixDaysBefore = new Date().setDate(new Date().getDate() - 6);
+    const ableToDeleteUsers = new Date(marathon.createdAt) > sixDaysBefore;
+    console.log("check to delete", sixDaysBefore, new Date(marathon.createdAt), ableToDeleteUsers)
     if (marathon) {
       let dateBefore = new Date().setDate(new Date().getDate() - 1);
       const allUsers = await getAllUsersId({ createdAt: { $lte: new Date(dateBefore) } });
@@ -96,19 +99,25 @@ export const scheduleCheckingReports = (bot) => {
           },
         });
         console.log(user, "REPORTS LENGTH", reports.length); //TODO: ADD HANDLER FOR FIRST 6 DAYS
-        if (reports.length < 1) {
-          const removeMessage = await getCommonMessageByType(
-            COMMON_MESSAGE_TYPES.RM
-          );
-          await updateUserByChatId(user, {
-            isActive: false,
-          });
-          bot.telegram.sendMessage(user, removeMessage.text);
-          sendNotificationForReviewer({
-            message: `Пользователь с чат-айди ${user} был удалён из системы из-за отссутствия отчётов.`,
-            ctx: bot,
-          });
-        }
+        // if (ableToDeleteUsers && reports.length < 1) {
+        //   const removeMessage = await getCommonMessageByType(
+        //     COMMON_MESSAGE_TYPES.RM
+        //   );
+        //   await updateUserByChatId(user, {
+        //     isActive: false,
+        //   });
+        //   bot.telegram.sendMessage(user, removeMessage.text);
+        //   sendNotificationForReviewer({
+        //     message: `Пользователь с чат-айди ${user} был удалён из системы из-за отссутствия отчётов.`,
+        //     ctx: bot,
+        //   });
+        // }
+        // if (ableToDeleteUsers && reports.length === 1) {
+        //   sendNotificationForReviewer({
+        //     message: `Завтра пользователь с чат-айди ${user} будет удалён из системы из-за отссутствия отчётов.`,
+        //     ctx: bot,
+        //   });
+        // }
       }
     } else {
       task.destroy();
