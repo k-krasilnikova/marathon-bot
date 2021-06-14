@@ -76,10 +76,10 @@ export const scheduleCheckingReports = (bot) => {
     const marathon = await getMarathon({
       isActive: true,
     });
-    let sixDaysBefore = new Date().setDate(new Date().getDate() - 6);
-    const ableToDeleteUsers = new Date(marathon.createdAt) > sixDaysBefore;
-    console.log("check to delete", sixDaysBefore, new Date(marathon.createdAt), ableToDeleteUsers)
     if (marathon) {
+      let sixDaysBefore = new Date().setDate(new Date().getDate() - 6);
+      const ableToDeleteUsers = new Date(marathon.createdAt) > sixDaysBefore;
+      console.log("check to delete", sixDaysBefore, new Date(marathon.createdAt), ableToDeleteUsers)
       let dateBefore = new Date().setDate(new Date().getDate() - 1);
       const allUsers = await getAllUsersId({ createdAt: { $lte: new Date(dateBefore) } });
       const usersWithReport = await getUsersWithReport();
