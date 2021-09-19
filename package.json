@@ -18,7 +18,7 @@
     "lodash": "^4.17.20",
     "migrate-mongo": "^8.1.4",
     "moment": "^2.29.1",
-    "mongoose": "^5.11.4",
+    "mongoose": "^5.13.9",
     "node-cron": "^2.0.3",
     "nodemon": "^2.0.6",
     "telegraf": "^3.38.0"
